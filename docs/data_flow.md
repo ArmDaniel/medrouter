@@ -15,9 +15,11 @@ MedRouter processes patient data using two Language Models (LLMs) – MedGemma f
         *   Uploaded files (e.g., medical images like X-rays, CT scans, or documents like PDFs of previous lab reports).
     *   A new **Patient Case** record is created in the database with a "Pending" status. The initial data is stored and associated with this case.
 
-2.  **Doctor Assignment**:
-    *   The new **Patient Case** appears in the **Doctor's** queue.
-    *   A **Doctor** assigns the case to themselves. The case status might change to "Under Review".
+2.  **Doctor Selection by Patient**:
+    *   After case creation, the **Patient** is presented with a list of available **Doctors**. This list can be filtered by medical specialty relevant to the case data provided.
+    *   The system may also display additional information such as doctor reviews or scores (the mechanism for reviews/scores is a future consideration).
+    *   The **Patient** selects a **Doctor** from this list to assign to their case.
+    *   Upon doctor selection, the chosen **Doctor** is notified, and the case status might change to 'Pending Doctor Acceptance' or directly to 'Under Review' if explicit acceptance is not required from the doctor's side initially.
 
 3.  **Data Processing by LLMs**:
     *   The **Backend API Gateway** routes the patient's data to the appropriate LLMs:

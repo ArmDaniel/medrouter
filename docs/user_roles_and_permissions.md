@@ -20,7 +20,9 @@ Patients have the following capabilities:
     *   Update their profile information (excluding role).
     *   Delete their account (subject to data retention policies).
 *   **Case Management**:
-    *   Create new medical cases by providing initial data (text, uploading files like images, PDFs).
+    *   Create new medical cases by providing initial data (text, uploading files like images, PDFs) and selecting a doctor based on specialty.
+    *   View a list of available doctors, potentially filtered by specialty and displaying information like reviews or scores (details of review/score system to be defined later).
+    *   Select a doctor for their case from the available list.
     *   View the status of their active cases.
     *   Access and view simplified reports generated for them.
     *   Communicate with the assigned doctor via the chat interface for their specific case.
@@ -37,18 +39,16 @@ Doctors have the following capabilities:
     *   Create and manage their own account (details may be pre-verified by an admin in a full system).
     *   Update their profile information, including specialty (excluding role).
 *   **Case Management**:
-    *   View a queue of unassigned patient cases.
-    *   Assign cases to themselves from the queue.
-    *   View all data associated with their assigned patient cases (including raw data provided by the patient and outputs from LLMs).
+    *   View all data associated with patient cases assigned to them by patients (including raw data provided by the patient and outputs from LLMs).
     *   Generate comprehensive medical reports in Markdown format.
-    *   Communicate with patients via the chat interface for their assigned cases.
+    *   Communicate with patients via the chat interface for cases assigned to them.
     *   Update the status of patient cases (e.g., "Pending", "Under Review", "Report Generated", "Closed").
 *   **Data Access**:
     *   Access their own user data.
     *   Access all data related to patient cases they are assigned to.
     *   Access chat histories for cases they are assigned to.
 *   **Notifications**:
-    *   Receive notifications for new patient cases added to the queue (if applicable based on specialty or general availability).
+    *   Receive notifications when a patient selects them for a new case.
     *   Receive notifications for new messages from patients on their assigned cases.
 
 ## Future Considerations

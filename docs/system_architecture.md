@@ -28,6 +28,7 @@ MedRouter will be designed with a modern, decoupled architecture consisting of a
             *   Orchestrating calls to LLMs.
             *   **Data Processing Module**: Compiling data from LLMs. (Singleton Pattern)
             *   **Report Generation Module**: Creating patient and doctor reports. (Factory Pattern)
+            *   Managing doctor availability and facilitating patient-led doctor selection based on specialty (and potentially reviews/scores in the future).
         *   Interacting with the database.
         *   Managing chat communications.
 
@@ -40,6 +41,7 @@ MedRouter will be designed with a modern, decoupled architecture consisting of a
         *   Storing patient case information (metadata, status, references to data, reports).
         *   Storing chat logs.
         *   Storing LLM outputs (or references to where they are stored if they are large).
+        *   Storing doctor profiles, including specialties, availability, and potentially reviews/scores (for future implementation).
 
 4.  **Language Model (LLM) Integration**:
     *   **MedGemma (via LMStudio)**:
