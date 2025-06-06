@@ -1,30 +1,34 @@
 const User = require('../models/UserModel');
+const CaseModel = require('../models/CaseModel'); // Added
 
 async function initializeDatabase() {
   try {
     console.log('Initializing database...');
-    // Enable UUID generation if not enabled by default and using older PG
-    // await User.pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    // await db.pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'); // If needed for PG < 13
+
+    console.log('Creating users table...');
     await User.createTable();
     console.log('Users table created or already exists.');
-    // Potentially close the pool if this script is run and exits
-    // await User.pool.end(); // Or db.pool.end() if db is exported from database.js
+
+    console.log('Creating patient_cases table...'); // Added
+    await CaseModel.createTable(); // Added
+    console.log('Patient_cases table created or already exists.'); // Added
+
   } catch (err) {
     console.error('Error initializing database:', err);
     process.exit(1);
   }
 }
 
-// If this script is run directly:
 if (require.main === module) {
   initializeDatabase().then(() => {
     console.log('Database initialization script finished.');
-    // Make sure to call pool.end() if you are done with the pool.
-    // For a script like this, it's often good practice.
-    // However, if other parts of your app are running, you might not want to end it here.
-    // For now, we'll assume this is a one-off script.
     const db = require('../config/database');
-    db.pool.end();
+    db.pool.end().then(() => console.log('Database pool closed.'));
+  }).catch(err => {
+    console.error('Script execution error:', err);
+    const db = require('../config/database');
+    db.pool.end().then(() => console.log('Database pool closed after error.'));
   });
 }
 
