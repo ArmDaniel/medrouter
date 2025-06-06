@@ -1,0 +1,101 @@
+version: '3.8' # Specify docker-compose version
+
+services:
+  # Backend Service
+  backend:
+    build:
+      context: ./backend # Path to backend Dockerfile directory
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Map host port 3000 to container port 3000 (or ${PORT})
+    volumes:
+      - ./backend:/usr/src/app # Mount backend source code for live reload
+      - /usr/src/app/node_modules # Avoids overwriting container node_modules with host's (if any)
+    env_file:
+      - ./backend/.env # Use .env file from backend directory
+    environment:
+      # Environment variables can also be set directly here
+      # Example: NODE_ENV: development
+      DB_HOST: database # Service name of the PostgreSQL container
+      # DB_USER, DB_PASSWORD, DB_NAME, DB_PORT will be taken from backend/.env
+      # Ensure JWT_SECRET and JWT_REFRESH_SECRET are in backend/.env
+    depends_on:
+      database: # Wait for database service to be healthy (or just started)
+        condition: service_healthy # Recommended, or service_started
+    networks:
+      - medrouter_network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend # Path to frontend Dockerfile directory
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001" # Map host port 3001 to container port 3001 (React dev server)
+                    # Ensure frontend/Dockerfile EXPOSE matches the container port here (e.g. 3001)
+                    # And that REACT_APP_DEV_PORT or PORT in frontend/.env is set to 3001 if create-react-app uses it.
+                    # Or, if frontend runs on 3000 in container, map to different host port: "3001:3000"
+    volumes:
+      - ./frontend:/usr/src/app # Mount frontend source code for live reload
+      - /usr/src/app/node_modules # Avoids overwriting container node_modules
+    environment:
+      # For create-react-app, PORT env var can set the dev server port inside container.
+      # If frontend/Dockerfile EXPOSEs 3001 and CMD is "npm start",
+      # you might need to ensure CRA respects PORT=3001. Often it defaults to 3000.
+      # If CRA runs on 3000 in container, the ports line should be "3001:3000". Let's assume it runs on 3001 for now.
+      PORT: 3001
+      REACT_APP_API_URL: http://backend:3000/api # Points to the backend service through Docker network
+      CHOKIDAR_USEPOLLING: "true" # Often needed for hot reloading in Docker on some systems
+    depends_on:
+      - backend # Frontend might depend on backend being available
+    networks:
+      - medrouter_network
+
+  # Database Service (PostgreSQL)
+  database:
+    image: postgres:13-alpine # Using PostgreSQL 13
+    ports:
+      - "54320:5432" # Map host port 54320 to container port 5432 to avoid conflicts
+                     # with local PostgreSQL if any. Access from host via port 54320.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist database data
+      # Optional: Mount an init script to create DB and user if needed,
+      # though environment variables are often enough for PostgreSQL image.
+      # - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    environment:
+      POSTGRES_USER: ${DB_USER:-medrouter_user}        # Use from .env or default
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-securepassword} # Use from .env or default
+      POSTGRES_DB: ${DB_NAME:-medrouter_db}            # Use from .env or default
+    healthcheck: # Checks if the database is ready to accept connections
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-medrouter_user} -d ${DB_NAME:-medrouter_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medrouter_network
+
+volumes:
+  postgres_data: # Define the named volume for data persistence
+
+networks:
+  medrouter_network: # Define a custom bridge network
+    driver: bridge
+
+# Instructions for use:
+# 1. Create a .env file in the project root (or ensure backend/.env has DB_USER, DB_PASSWORD, DB_NAME).
+#    This root .env file can supply POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB for the database service.
+#    Example root .env:
+#    DB_USER=medrouter_user
+#    DB_PASSWORD=securepassword
+#    DB_NAME=medrouter_db
+#
+# 2. Run 'docker-compose up --build'.
+# 3. Backend will be at http://localhost:3000.
+# 4. Frontend will be at http://localhost:3001.
+# 5. PostgreSQL will be accessible from the host at port 54320.
+#    Backend service connects to 'database:5432'.
+#
+# Note on frontend port: If CRA inside Docker still tries to run on 3000 (ignoring PORT=3001),
+# and backend is on 3000, you must change the *host* port for frontend in docker-compose.yml,
+# e.g., "3002:3000", and access frontend on http://localhost:3002.
+# The current setup assumes frontend dev server runs on port 3001 in the container.
