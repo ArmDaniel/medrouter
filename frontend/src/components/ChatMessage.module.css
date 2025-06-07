@@ -1,0 +1,41 @@
+.message {
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  max-width: 70%;
+  clear: both;
+  word-wrap: break-word;
+}
+
+.currentUser {
+  background-color: #dcf8c6; /* Light green for current user */
+  float: right;
+  margin-left: auto; /* Push to the right */
+}
+
+.otherUser {
+  background-color: #f1f0f0; /* Light grey for other users */
+  float: left;
+  margin-right: auto; /* Push to the left */
+}
+
+.messageInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 0.8em;
+  color: #555;
+}
+
+.sender {
+  font-weight: bold;
+}
+
+.timestamp {
+  margin-left: 10px;
+  color: #777;
+}
+
+.content p {
+  margin: 0;
+}

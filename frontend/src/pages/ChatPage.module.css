@@ -1,0 +1,40 @@
+.chatPageContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px); /* Adjust based on nav/header height */
+  max-width: 800px;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.chatHeader {
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.errorMessage {
+  color: red;
+  text-align: center;
+  padding: 10px;
+  background-color: #ffe0e0;
+  border: 1px solid red;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.container p { /* For login message */
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+}
+
+/* Ensure MessageList and ChatInput fit well */
+/* MessageList already has its own styles for height and scrolling */
+/* ChatInput styles are also self-contained */
