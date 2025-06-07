@@ -128,3 +128,16 @@ This frontend service can be run as part of a multi-container setup using Docker
     *   An input field and send button for composing and sending new messages.
 *   The interface is built using components like `ChatMessage`, `MessageList`, and `ChatInput`, with styling provided by CSS Modules.
 *   Backend communication for chat functionalities is handled by the `services/chatService.js`.
+
+
+### File Upload Functionality
+
+*   Patients can upload files (e.g., medical documents, images) via the `/upload-files` route (requires login as a Patient).
+*   This page uses a dedicated `FileUpload` component that allows selection of one or more files.
+*   Selected files are displayed before uploading.
+*   An upload button triggers the upload process, which communicates with a backend endpoint (assumed to be `/api/cases/:caseId/files`).
+*   Upload progress (currently simulated based on the number of files for multi-file uploads; individual file progress via Axios is available in the service) and success/error messages are displayed to the user.
+*   **Note**:
+    *   The page currently uses a hardcoded case ID (`test-case-123`) for uploads. This will be made dynamic in future updates (e.g., when case selection is implemented).
+    *   The actual backend endpoint for handling file uploads (e.g., using `multer` on an Express.js backend) needs to be implemented separately on the backend server for this feature to be fully functional end-to-end.
+*   The file upload API communication logic is located in `services/fileService.js`.
