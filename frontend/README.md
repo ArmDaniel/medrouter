@@ -115,3 +115,16 @@ This frontend service can be run as part of a multi-container setup using Docker
         ```bash
         docker-compose down
         ```
+
+
+### Chat Interface
+
+*   A basic chat interface has been implemented and can be accessed via the `/chat` route (requires login, typically as a Patient for the current setup).
+*   It allows users to view messages and send new messages for a case.
+*   **Note**: Currently, the `ChatPage.js` uses a hardcoded case ID (`test-case-123`) for demonstration purposes. This will be made dynamic in future updates (e.g., when case selection is implemented).
+*   Features include:
+    *   Display of messages, differentiating between the current user's messages and others.
+    *   A scrollable message list that automatically scrolls to the latest message.
+    *   An input field and send button for composing and sending new messages.
+*   The interface is built using components like `ChatMessage`, `MessageList`, and `ChatInput`, with styling provided by CSS Modules.
+*   Backend communication for chat functionalities is handled by the `services/chatService.js`.
