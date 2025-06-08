@@ -4,155 +4,118 @@ This directory contains the backend server for the MedRouter application, built 
 
 ## Prerequisites
 
-*   **Node.js**: Version 16.x or higher. (Check with \`node -v\`)
-*   **npm**: Usually comes with Node.js. (Check with \`npm -v\`)
-*   **PostgreSQL**: A running PostgreSQL instance (Version 13+ recommended for \`gen_random_uuid()\`).
-    *   You will need to create a database and a user for MedRouter.
+*   **Node.js**: Version 16.x or higher.
+*   **npm**: Package manager.
+*   **PostgreSQL**: A running PostgreSQL instance (Version 13+ recommended).
 
 ## Setup Instructions (Local Development without Docker)
 
-1.  **Clone the Repository**:
-    \`\`\`bash
+1.  **Clone Repository & Navigate**:
+    ```bash
     git clone <repository_url>
     cd <repository_directory>/backend
-    \`\`\`
+    ```
 
 2.  **Install Dependencies**:
-    \`\`\`bash
+    ```bash
     npm install
-    \`\`\`
+    ```
 
-3.  **Configure Environment Variables**:
-    *   Create a \`.env\` file in the \`backend\` directory by copying \`.env.example\` or creating it manually:
-        \`\`\`bash
-        cp .env.example .env
-        \`\`\`
-    *   Edit the \`.env\` file with your specific configurations:
-        \`\`\`
+3.  **Configure Environment Variables (`.env` file)**:
+    *   Copy `backend/.env.example` to `backend/.env`.
+    *   Update with your specific configurations:
+        ```env
         NODE_ENV=development
         PORT=3000
 
         # Database Configuration
-        DB_USER=your_db_user          # e.g., medrouter_user
-        DB_HOST=your_db_host          # e.g., localhost (for local PG setup)
-        DB_NAME=your_db_name          # e.g., medrouter_db
-        DB_PASSWORD=your_db_password    # e.g., securepassword
-        DB_PORT=your_db_port          # e.g., 5432 (default for PostgreSQL)
+        DB_USER=your_db_user
+        DB_HOST=localhost # For local PG
+        DB_NAME=your_db_name
+        DB_PASSWORD=your_db_password
+        DB_PORT=5432
 
-        # JWT Secrets (Use strong, unique random strings)
-        JWT_SECRET='your-super-secret-jwt-key-for-access-tokens'
-        JWT_REFRESH_SECRET='your-super-secret-jwt-key-for-refresh-tokens'
+        # JWT Secrets
+        JWT_SECRET='your_jwt_secret_access'
+        JWT_REFRESH_SECRET='your_jwt_secret_refresh'
         ACCESS_TOKEN_EXPIRES_IN='15m'
         REFRESH_TOKEN_EXPIRES_IN='7d'
 
-        # LLM Integration (Ensure these are set if using LLM features)
-        MEDGEMMA_API_URL=http://localhost:1234/v1/chat/completions # Example for local LMStudio
-        MISTRAL_IMAGE_API_URL=https://your-mistral-api-endpoint/invoke # Replace with actual URL
-        MISTRAL_IMAGE_API_KEY=your-mistral-api-key       # Replace with actual key
-        \`\`\`
-    *   **Important**: Replace placeholder values with your actual credentials and strong random secrets.
+        # LLM Integration
+        MEDGEMMA_API_URL=http://localhost:1234/v1/chat/completions # e.g., for LMStudio
+        MISTRAL_IMAGE_API_URL=https://your_mistral_api.example.com/invoke # Replace with actual URL
+        MISTRAL_IMAGE_API_KEY=your_mistral_api_key       # Replace with actual key
+        ```
 
 4.  **Database Setup**:
-    *   Ensure your PostgreSQL server is running.
-    *   Connect to PostgreSQL (e.g., using \`psql\`) and create the database and user specified in your \`.env\` file.
-        \`\`\`sql
-        CREATE DATABASE medrouter_db;
-        CREATE USER medrouter_user WITH PASSWORD 'securepassword';
-        GRANT ALL PRIVILEGES ON DATABASE medrouter_db TO medrouter_user;
-        -- If using gen_random_uuid() on PG < 13, you might need to install the "uuid-ossp" extension:
-        -- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-        -- (Connect to your database first: \c medrouter_db)
-        \`\`\`
-    *   Initialize the database schema (creates \`users\` and \`patient_cases\` tables):
-        \`\`\`bash
+    *   Ensure PostgreSQL is running. Create the database and user as specified in `.env`.
+    *   Initialize schema:
+        ```bash
         node src/scripts/initializeDb.js
-        \`\`\`
+        ```
 
-5.  **Run the Application**:
-    *   For development with auto-reloading (using \`nodemon\`):
-        \`\`\`bash
+5.  **Run Application**:
+    *   Development (with nodemon):
+        ```bash
         # Actual command: npm run dev
         npm run dev-script
-        \`\`\`
-    *   To run in production mode:
-        \`\`\`bash
+        ```
+    *   Production:
+        ```bash
         # Actual command: npm start
         npm run start-script
-        \`\`\`
-    *   The server should start, typically on \`http://localhost:3000\`.
+        ```
+    *   Server typically at `http://localhost:3000`.
 
 ## API Endpoints
 
-The API is structured as follows:
+*   `/api/auth`: User authentication.
+*   `/api/users`: User-specific data.
+*   `/api/cases`: Case management (creation, assignment, chat, file uploads to `:caseId/files`, data processing, reports).
+*   LLM interactions are handled internally by the `DataProcessingService` via adapters, not exposed as direct frontend-callable LLM endpoints.
 
-*   \`/api/auth\`: Authentication (register, login, refresh token)
-*   \`/api/users\`: User-specific information (e.g., \`/me\`, role-based dashboards)
-*   \`/api/cases\`: Patient case management (create, view, assign doctor, add chat, process data, generate reports, file uploads to \`/api/cases/:caseId/files\`)
-*   \`/api/llm\`: LLM interactions (currently integrated into case processing, not direct endpoints for frontend)
+## Project Structure Highlights
 
-(More detailed API documentation will be provided separately).
-
-## Project Structure
-
-*   \`src/\`: Contains the core application code.
-    *   \`config/\`: Database and other configurations.
-    *   \`controllers/\`: Request handlers.
-    *   \`middlewares/\`: Custom middleware (e.g., auth, RBAC).
-    *   \`models/\`: Database models/schemas.
-    *   \`routes/\`: API route definitions.
-    *   \`services/\`: Business logic services (e.g., data processing, report generation).
-    *   \`scripts/\`: Utility scripts (e.g., database initialization).
-    *   \`app.js\`: Express application setup.
-    *   \`index.js\`: Server entry point.
-*   \`.env\`: Environment variables (ignored by Git).
-*   \`.env.example\`: Example environment variables.
-*   \`README.md\`: This file.
+*   `src/`: Core application code.
+    *   `llm_adapters/`: Contains modules for interacting with specific LLM services (e.g., `medGemmaAdapter.js`, `mistralAdapter.js`). This modular design allows for easier customization or replacement of LLM providers. Each adapter handles its own API communication and data transformation, conforming to a standardized response pattern.
+    *   `services/DataProcessingService.js`: Orchestrates calls to LLM adapters and compiles their results.
+    *   Other directories: `config`, `controllers`, `middlewares`, `models`, `routes`, `scripts`.
+*   `.env`: Environment variables (gitignored).
+*   `.env.example`: Template for environment variables.
 
 ## Running with Docker (Recommended for Development)
 
-This backend service can be run as part of a multi-container setup using Docker Compose, located in the project root.
+Provides a consistent environment for backend, frontend, and database.
 
-1.  **Prerequisites**:
-    *   Docker and Docker Compose installed.
-    *   Ensure you have a \`.env\` file in this (\`backend\`) directory. Key variables:
-        *   \`DB_USER\`, \`DB_PASSWORD\`, \`DB_NAME\`: Credentials for the PostgreSQL database.
-        *   \`DB_HOST\`: **Important:** When running via Docker Compose as configured in the root \`docker-compose.yml\`, this should be set to \`database\` (the service name of the PostgreSQL container). The \`docker-compose.yml\` overrides this setting for the container environment.
-        *   \`DB_PORT\`: Should be \`5432\` (the port PostgreSQL listens on *inside* the Docker network).
-        *   \`JWT_SECRET\`, \`JWT_REFRESH_SECRET\`: Your JWT secrets.
-        *   \`PORT\`: The port the backend server will listen on inside the container (e.g., 3000).
-        *   \`MEDGEMMA_API_URL\`, \`MISTRAL_IMAGE_API_URL\`, \`MISTRAL_IMAGE_API_KEY\`: As described in the LLM section below.
+1.  **Prerequisites**: Docker and Docker Compose.
+2.  **Environment Files**:
+    *   **Root `.env`**: For Docker Compose database credentials (see root `README.md`).
+    *   **`backend/.env`**: Ensure this file exists. For Docker:
+        *   `DB_HOST=database` (service name of PostgreSQL container).
+        *   LLM variables (`MEDGEMMA_API_URL`, etc.) should point to URLs accessible from within the Docker network (e.g., `http://host.docker.internal:1234` for LMStudio running on host, or actual deployed URLs).
 
-2.  **Root \`.env\` File for Docker Compose**:
-    *   The main \`docker-compose.yml\` in the project root also uses a root-level \`.env\` file to supply credentials for the PostgreSQL service itself (e.g., \`POSTGRES_USER\`, \`POSTGRES_PASSWORD\`, \`POSTGRES_DB\`). Ensure these match the credentials the backend will use.
+3.  **Run Services (from project root)**:
+    ```bash
+    docker-compose up --build
+    ```
+    *   Backend at `http://localhost:3000`.
 
-3.  **Running the Services**:
-    *   Navigate to the **project root directory** (the one containing \`docker-compose.yml\`).
-    *   Run the following command:
-        \`\`\`bash
-        docker-compose up --build
-        \`\`\`
-    *   The backend service will be accessible on the host at \`http://localhost:3000\`.
+4.  **Database Init (with Docker)**:
+    After services are up, run from project root:
+    ```bash
+    docker-compose exec backend node src/scripts/initializeDb.js
+    ```
 
-4.  **Database Initialization with Docker**:
-    *   When running for the first time via Docker Compose, execute the database initialization script **inside the running backend container** once the database service is healthy:
-        \`\`\`bash
-        docker-compose exec backend node src/scripts/initializeDb.js
-        \`\`\`
+5.  **Stop Services**: `Ctrl+C`, then `docker-compose down` from project root.
 
-5.  **Stopping the Services**:
-    *   Press \`Ctrl+C\` in the terminal where \`docker-compose up\` is running.
-    *   To remove containers: \`docker-compose down\`
+### LLM Integration Details
 
-### LLM Integration Environment Variables
-
-The following environment variables must be set in your \`backend/.env\` file to connect to the Language Model services:
-
-*   \`MEDGEMMA_API_URL\`: The URL for the MedGemma service (e.g., an LMStudio OpenAI-compatible endpoint like \`http://localhost:1234/v1/chat/completions\`).
-*   \`MISTRAL_IMAGE_API_URL\`: The URL for your fine-tuned Mistral model API for image analysis.
-*   \`MISTRAL_IMAGE_API_KEY\`: The API key required to authenticate with the Mistral image analysis API, if applicable.
-
-**Note on LLM Services**: For the MedGemma integration, ensure that LMStudio (or your chosen MedGemma hosting solution) is running and accessible from the backend environment. For Mistral, the image analysis API endpoint must be operational and reachable. The backend also needs access to uploaded image files (e.g., via a shared volume or by resolving file IDs to paths) to send them to the Mistral API; the current implementation uses a placeholder directory \`uploads_placeholder\` for development if actual files aren't found.
+*   The backend integrates with MedGemma (via LMStudio or similar) for text analysis and a fine-tuned Mistral model for image analysis.
+*   Configuration for these services (API URLs, keys) is managed via environment variables in `backend/.env`.
+*   **LLM Adapters**: The interaction logic for each LLM is encapsulated in an "adapter" module within the `src/llm_adapters` directory. This design promotes modularity. To customize an LLM integration (e.g., change API endpoint, modify payload/response handling, or switch to a different provider for a similar task), you would primarily modify the corresponding adapter file.
+*   **Accessibility**: Ensure the LLM services are network-accessible from where the backend is running (e.g., from the Docker container if using Docker, or from localhost if running locally).
+*   **File Handling for Mistral**: The `mistralAdapter.js` currently includes placeholder logic to access image files from a local `uploads_placeholder` directory. For this to work correctly, the backend's file upload mechanism must store files in a location accessible to the adapter, and the adapter must be correctly configured with this path.
 
 ### Additional Dependencies
 
-*   **form-data**: Used for sending \`multipart/form-data\` requests, specifically for uploading images to the Mistral image analysis service. This is already included in \`package.json\` and will be installed with \`npm install\`.
+*   **form-data**: Used for `multipart/form-data` requests (Mistral image uploads). Included in `package.json`.
