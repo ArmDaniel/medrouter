@@ -92,3 +92,12 @@ The initial planning and design documents for MedRouter can be found in the `/do
 ---
 # medrouter
 an application that uses MedGemma and Mistral fine tuned models for preliminary medical screening and routing patients to appropriate medical specialists alongside a full medical report and possible issues
+
+## Testing Strategies
+
+Comprehensive testing is crucial for ensuring the reliability, functionality, and security of MedRouter. The following documents outline our testing strategies:
+
+*   **[End-to-End (E2E) Data Flow Testing Strategy](./docs/testing/e2e_data_flow_testing_strategy.md)**: Details the approach for validating the complete data pipeline from patient input to report generation and access.
+*   **[Security Testing Strategy](./docs/testing/security_testing_strategy.md)**: Outlines areas and methods for testing the security of the application, including authentication, authorization, data protection, and compliance considerations.
+
+*(Specific test plans and reports will be developed based on these strategies as features are implemented and stabilized.)*
