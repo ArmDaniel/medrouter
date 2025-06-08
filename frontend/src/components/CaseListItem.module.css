@@ -1,0 +1,59 @@
+.caseListItem {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  /* Add transition for hover effects if desired */
+  /* transition: box-shadow 0.2s ease-in-out; */
+}
+
+/* Example hover effect:
+.caseListItem:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+}
+*/
+
+.caseInfo {
+  margin-bottom: 8px;
+  font-size: 0.95em;
+  color: #333;
+}
+.caseInfo strong {
+  color: #555;
+  min-width: 120px; /* Align values somewhat */
+  display: inline-block;
+}
+
+.status {
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.85em;
+  text-transform: capitalize; /* Make status look a bit nicer */
+}
+
+/* Status color definitions - ensure these match DoctorDashboardPage.module.css if used there too */
+/* Or, ideally, define these in a global CSS or theme if they are widely reused */
+.statusPendingDoctorSelection { background-color: #ffc107; color: #333; } /* Yellow */
+.statusUnderReview { background-color: #17a2b8; } /* Teal */
+.statusReportGenerated { background-color: #28a745; } /* Green */
+.statusClosed { background-color: #6c757d; } /* Grey */
+.statusUnknown { background-color: #adb5bd; } /* Lighter Grey for unknown/default */
+
+
+.viewDetailsLink {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #5bc0de; /* Info blue */
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.viewDetailsLink:hover {
+  background-color: #31b0d5;
+}

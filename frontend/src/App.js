@@ -5,13 +5,11 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import DoctorDashboardPage from './pages/DoctorDashboardPage';
+import PatientFileUploadPage from './pages/PatientFileUploadPage'; // New Import
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
 
 function App() {
-  // const { isAuthenticated, user, logout } = useAuthStore(); // Not directly used here, Navigation component handles this
-
-  // Simple Nav component to use useNavigate for logout
   const Navigation = () => {
     const navigate = useNavigate();
     const { isAuthenticated: isLoggedIn, user: currentUser, logout: doLogout } = useAuthStore();
@@ -33,6 +31,7 @@ function App() {
           ) : (
             <>
               {currentUser?.role === 'Patient' && <li><Link to="/chat">Chat</Link></li>}
+              {currentUser?.role === 'Patient' && <li><Link to="/upload-files">Upload Files</Link></li>} {/* New Link */}
               {currentUser?.role === 'Doctor' && <li><Link to="/dashboard/doctor">Doctor Dashboard</Link></li>}
               <li><button onClick={handleLogoutClick}>Logout ({currentUser?.name})</button></li>
             </>
@@ -42,31 +41,23 @@ function App() {
     );
   };
 
-
   return (
     <Router>
-      <Navigation /> {/* Use the Navigation component here */}
+      <Navigation />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Protected Routes */}
-        {/* Example of a route accessible by any authenticated user:
-        <Route element={<ProtectedRoute />}>
-           <Route path="/some-general-protected-page" element={<SomeGeneralPage />} />
-        </Route>
-        */}
-
         <Route element={<ProtectedRoute allowedRoles={['Patient']} />}>
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/upload-files" element={<PatientFileUploadPage />} /> {/* New Route */}
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={['Doctor']} />}>
           <Route path="/dashboard/doctor" element={<DoctorDashboardPage />} />
         </Route>
 
-        {/* Add more routes as needed */}
       </Routes>
     </Router>
   );

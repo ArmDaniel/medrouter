@@ -1,0 +1,123 @@
+.dashboardContainer {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.header h2 {
+  color: #333;
+  font-size: 1.8em;
+  margin-bottom: 5px;
+}
+.header p {
+    color: #555;
+    font-size: 1em;
+}
+
+.refreshButton {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+.refreshButton:disabled {
+  background-color: #aaa;
+}
+.refreshButton:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.errorMessage {
+  color: #D8000C;
+  background-color: #FFD2D2;
+  border: 1px solid #D8000C;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.noCasesMessage {
+  text-align: center;
+  color: #777;
+  font-size: 1.1em;
+  padding: 20px;
+}
+
+.caseList {
+  margin-top: 20px;
+}
+
+.caseList h3 {
+  color: #444;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.caseListItem {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.caseInfo {
+  margin-bottom: 8px;
+  font-size: 0.95em;
+  color: #333;
+}
+.caseInfo strong {
+  color: #555;
+  min-width: 120px; /* Align values somewhat */
+  display: inline-block;
+}
+
+.status {
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.85em;
+}
+.statusPendingDoctorSelection { background-color: #ffc107; color: #333; /* Yellow */}
+.statusUnderReview { background-color: #17a2b8; /* Teal */}
+.statusReportGenerated { background-color: #28a745; /* Green */}
+.statusClosed { background-color: #6c757d; /* Grey */}
+
+
+.viewDetailsLink {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #5bc0de; /* Info blue */
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.viewDetailsLink:hover {
+  background-color: #31b0d5;
+}
