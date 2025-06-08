@@ -141,3 +141,19 @@ This frontend service can be run as part of a multi-container setup using Docker
     *   The page currently uses a hardcoded case ID (`test-case-123`) for uploads. This will be made dynamic in future updates (e.g., when case selection is implemented).
     *   The actual backend endpoint for handling file uploads (e.g., using `multer` on an Express.js backend) needs to be implemented separately on the backend server for this feature to be fully functional end-to-end.
 *   The file upload API communication logic is located in `services/fileService.js`.
+
+
+### Doctor's Panel (Dashboard)
+
+*   Doctors can access their dashboard via the `/dashboard/doctor` route (requires login as a Doctor).
+*   This page displays a list of patient cases currently assigned to the logged-in doctor.
+*   For each case, the dashboard shows:
+    *   Case ID
+    *   Patient ID
+    *   Current Status (e.g., "Under Review", "Report Generated", with color coding)
+    *   Creation Date
+    *   Last Updated Date
+*   A "Refresh Cases" button allows the doctor to manually re-fetch the list of assigned cases.
+*   The list items are rendered using a reusable `CaseListItem.js` component.
+*   Backend communication for fetching assigned cases is handled by `services/caseService.js`.
+*   **Note**: Clicking on a case to view full details is a future enhancement.
