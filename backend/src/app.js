@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const requestLogger = require('./middlewares/requestLogger');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const caseRoutes = require('./routes/caseRoutes'); // New
@@ -14,6 +15,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(requestLogger);
 
 // Routes
 app.use('/api/auth', authRoutes);

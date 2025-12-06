@@ -12,5 +12,7 @@ router.get('/doctor/dashboard', protect, authorize(['Doctor']), userController.g
 // Example of authorizing a single role string
 router.get('/patient/dashboard', protect, authorize('Patient'), userController.getPatientDashboard);
 
+// Get list of doctors (for patients to select)
+router.get('/doctors', protect, userController.getDoctors);
 
 module.exports = router;
