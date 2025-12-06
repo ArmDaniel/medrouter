@@ -39,13 +39,11 @@ const CaseListItem = ({ caseItem }) => {
       <div className={styles.caseInfo}>
         <strong>Last Updated:</strong> {formatDate(caseItem.updatedat)}
       </div>
-      {/* Placeholder for Link to detailed case view */}
-      {/* <Link to={`/case/${caseItem.caseid}`} className={styles.viewDetailsLink}>View Details</Link> */}
-      {/*
-        Alternatively, the whole item could be clickable, or an action button provided.
-        For now, focusing on display. Interaction can be added to DoctorDashboardPage
-        or by passing an onSelectCase prop.
-      */}
+      <div className={styles.caseActions}>
+        <Link to={`/chat/${caseItem.caseid}`} className={styles.viewDetailsLink}>
+          Open Chat
+        </Link>
+      </div>
     </li>
   );
 };

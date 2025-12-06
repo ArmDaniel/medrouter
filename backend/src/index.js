@@ -1,5 +1,15 @@
+require('dotenv').config();
 const app = require('./app');
+const validateEnv = require('./config/validateEnv');
 const initializeDatabase = require('./scripts/initializeDb'); // Optional: for auto-init
+
+// Validate environment variables before starting
+try {
+  validateEnv();
+} catch (error) {
+  console.error('[FATAL]', error.message);
+  process.exit(1);
+}
 
 const PORT = process.env.PORT || 3000;
 
