@@ -48,7 +48,7 @@ class DoctorMarkdownReport extends Report {
 
     markdown += `## Patient Provided Input\n`;
     markdown += `### Text Input\n`;
-    markdown += ```\n${(patientProvidedInput && patientProvidedInput.text) || 'No text input provided.'}\n```\n\n`;
+    markdown += `\`\`\`\n${(patientProvidedInput && patientProvidedInput.text) || 'No text input provided.'}\n\`\`\`\n\n`;
     if (patientProvidedInput && patientProvidedInput.files && patientProvidedInput.files.length > 0) {
       markdown += `### Submitted Files\n`;
       patientProvidedInput.files.forEach(file => {
@@ -63,7 +63,7 @@ class DoctorMarkdownReport extends Report {
       markdown += `- Summary: ${llmOutputs.medGemma.summary || 'N/A'}\n`;
       markdown += `- Entities: ${(llmOutputs.medGemma.entities || []).map(e => `${e.text} (${e.type})`).join(', ') || 'N/A'}\n`;
       markdown += `- Potential Conditions: ${(llmOutputs.medGemma.potentialConditions || []).join(', ') || 'N/A'}\n`;
-      markdown += `#### Raw Output (MedGemma):\n```\n${llmOutputs.medGemma.raw_output_medgemma || 'N/A'}\n```\n\n`;
+      markdown += `#### Raw Output (MedGemma):\n\`\`\`\n${llmOutputs.medGemma.raw_output_medgemma || 'N/A'}\n\`\`\`\n\n`;
     }
     if (llmOutputs.mistral && llmOutputs.mistral.length > 0) {
       markdown += `### Mistral Image Analysis\n`;
@@ -71,7 +71,7 @@ class DoctorMarkdownReport extends Report {
         markdown += `#### Image ${index + 1} (${imgAnalysis.imageId || 'N/A'})\n`;
         markdown += `- Description: ${imgAnalysis.description || 'N/A'}\n`;
         markdown += `- Identified Anomalies: ${(imgAnalysis.identifiedAnomalies || []).join(', ') || 'None'}\n`;
-        markdown += `#### Raw Output (Mistral - Image ${index + 1}):\n```\n${imgAnalysis.raw_output_mistral || 'N/A'}\n```\n\n`;
+        markdown += `#### Raw Output (Mistral - Image ${index + 1}):\n\`\`\`\n${imgAnalysis.raw_output_mistral || 'N/A'}\n\`\`\`\n\n`;
       });
     }
 
