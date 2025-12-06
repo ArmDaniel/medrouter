@@ -28,3 +28,28 @@ exports.getPatientDashboard = async (req, res) => {
         user: req.user
     });
 };
+
+/**
+ * Get list of all doctors
+ * This endpoint can be used by patients to select a doctor for their case
+ */
+exports.getDoctors = async (req, res) => {
+  try {
+    const db = require('../config/database');
+    const { rows } = await db.query(
+      'SELECT userid, name, email, specialty, createdat FROM users WHERE role = $1 ORDER BY name',
+      ['Doctor']
+    );
+    
+    res.status(200).json({
+      message: 'Doctors retrieved successfully.',
+      doctors: rows
+    });
+  } catch (error) {
+    console.error('Error fetching doctors:', error);
+    res.status(500).json({
+      message: 'Failed to fetch doctors.',
+      error: error.message
+    });
+  }
+};

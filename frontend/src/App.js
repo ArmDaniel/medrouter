@@ -30,8 +30,7 @@ function App() {
             </>
           ) : (
             <>
-              {currentUser?.role === 'Patient' && <li><Link to="/chat">Chat</Link></li>}
-              {currentUser?.role === 'Patient' && <li><Link to="/upload-files">Upload Files</Link></li>} {/* New Link */}
+              {currentUser?.role === 'Patient' && <li><Link to="/upload-files">Upload Files</Link></li>}
               {currentUser?.role === 'Doctor' && <li><Link to="/dashboard/doctor">Doctor Dashboard</Link></li>}
               <li><button onClick={handleLogoutClick}>Logout ({currentUser?.name})</button></li>
             </>
@@ -49,8 +48,11 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
+        <Route element={<ProtectedRoute allowedRoles={['Patient', 'Doctor']} />}>
+          <Route path="/chat/:caseId" element={<ChatPage />} />
+        </Route>
+
         <Route element={<ProtectedRoute allowedRoles={['Patient']} />}>
-          <Route path="/chat" element={<ChatPage />} />
           <Route path="/upload-files" element={<PatientFileUploadPage />} /> {/* New Route */}
         </Route>
 

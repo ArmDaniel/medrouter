@@ -1,7 +1,7 @@
 const CaseModel = require('../models/CaseModel');
 const UserModel = require('../models/UserModel'); // To fetch doctor list
 const crypto = require('crypto'); // For generating messageId
-const DataProcessingService = require('../services/dataProcessingService');
+const DataProcessingService = require('../services/DataProcessingService');
 const { ReportFactory } = require('../services/reportGenerationService'); // Added
 
 // Patient creates a new case

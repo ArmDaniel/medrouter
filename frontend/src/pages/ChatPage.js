@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import MessageList from '../components/MessageList';
 import ChatInput from '../components/ChatInput';
 import useAuthStore from '../store/authStore';
@@ -6,7 +7,8 @@ import chatService from '../services/chatService'; // USING THE ACTUAL SERVICE
 import styles from './ChatPage.module.css';
 
 const ChatPage = () => {
-  const HARDCODED_CASE_ID = 'test-case-123'; // TODO: Replace with dynamic case ID selection
+  const { caseId } = useParams(); // Get caseId from URL params
+  const navigate = useNavigate();
 
   const [messages, setMessages] = useState([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
@@ -19,6 +21,10 @@ const ChatPage = () => {
   }));
 
   const loadMessages = useCallback(async () => {
+    if (!caseId) {
+      setError("No case ID provided. Please select a case.");
+      return;
+    }
     if (!user || !tokens?.accessToken) { // Check for accessToken specifically
       setError("User not authenticated or token missing.");
       return;
@@ -26,7 +32,7 @@ const ChatPage = () => {
     setIsLoadingMessages(true);
     setError(null);
     try {
-      const fetchedMessages = await chatService.getChatMessages(HARDCODED_CASE_ID); // Token is handled by service
+      const fetchedMessages = await chatService.getChatMessages(caseId); // Token is handled by service
       setMessages(fetchedMessages || []); // Service returns chatHistory array
     } catch (err) {
       console.error("Failed to load messages:", err);
@@ -34,7 +40,7 @@ const ChatPage = () => {
     } finally {
       setIsLoadingMessages(false);
     }
-  }, [user, tokens?.accessToken]); // Dependency on accessToken to re-fetch if token changes (e.g. after refresh)
+  }, [caseId, user, tokens?.accessToken]); // Dependency on caseId and accessToken
 
   useEffect(() => {
     if (user && tokens?.accessToken) { // Only load messages if authenticated
@@ -43,6 +49,10 @@ const ChatPage = () => {
   }, [loadMessages, user, tokens?.accessToken]);
 
   const handleSendMessage = async (content) => {
+    if (!caseId) {
+      setError("No case ID provided. Cannot send message.");
+      return;
+    }
     if (!user || !tokens?.accessToken) {
       setError("User not authenticated. Cannot send message.");
       return;
@@ -54,7 +64,7 @@ const ChatPage = () => {
         content: content,
         // senderId and senderRole are derived from JWT by the backend
       };
-      const response = await chatService.sendChatMessage(HARDCODED_CASE_ID, messageData); // Token handled by service
+      const response = await chatService.sendChatMessage(caseId, messageData); // Token handled by service
       // Backend currently returns { message: '...', chatHistory: [...] }
       // So we can update the messages with the full history.
       setMessages(response.chatHistory || []);
@@ -66,6 +76,15 @@ const ChatPage = () => {
     }
   };
 
+  if (!caseId) {
+    return (
+      <div className={styles.container}>
+        <p>No case ID provided. Please select a case to view the chat.</p>
+        <button onClick={() => navigate(-1)}>Go Back</button>
+      </div>
+    );
+  }
+
   if (!user) {
     return <div className={styles.container}><p>Please log in to use the chat.</p></div>;
   }
@@ -76,7 +95,7 @@ const ChatPage = () => {
 
   return (
     <div className={styles.chatPageContainer}>
-      <h2 className={styles.chatHeader}>Chat for Case: {HARDCODED_CASE_ID}</h2>
+      <h2 className={styles.chatHeader}>Chat for Case: {caseId}</h2>
       {error && <p className={styles.errorMessage}>Error: {error}</p>}
       <MessageList
         messages={messages}

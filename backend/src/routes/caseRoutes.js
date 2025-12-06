@@ -1,6 +1,7 @@
 const express = require('express');
 const caseController = require('../controllers/caseController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
+const { llmLimiter } = require('../middlewares/rateLimiter');
 
 const router = express.Router();
 
@@ -13,14 +14,14 @@ router.post('/select-doctor', protect, authorize('Patient'), caseController.sele
 // Doctor routes
 router.get('/assigned-cases', protect, authorize('Doctor'), caseController.getAssignedCases);
 router.put('/:caseId/data', protect, authorize('Doctor'), caseController.updateCaseData); // For general data updates
-router.post('/:caseId/process-data', protect, authorize('Doctor'), caseController.processCaseDataByDoctor);
-router.post('/:caseId/generate-doctor-report', protect, authorize('Doctor'), caseController.generateDoctorReport);
+router.post('/:caseId/process-data', protect, authorize('Doctor'), llmLimiter, caseController.processCaseDataByDoctor);
+router.post('/:caseId/generate-doctor-report', protect, authorize('Doctor'), llmLimiter, caseController.generateDoctorReport);
 
 
 // Common routes (Patient and assigned Doctor)
 router.get('/:caseId', protect, authorize(['Patient', 'Doctor']), caseController.getCaseById);
 router.get('/:caseId/final-report', protect, authorize(['Patient', 'Doctor']), caseController.getFinalReport);
-router.post('/:caseId/generate-patient-summary', protect, authorize(['Patient', 'Doctor']), caseController.generatePatientSummary); // Allow Patient to also generate their summary if report is ready
+router.post('/:caseId/generate-patient-summary', protect, authorize(['Patient', 'Doctor']), llmLimiter, caseController.generatePatientSummary); // Allow Patient to also generate their summary if report is ready
 
 
 // Chat routes within a case
